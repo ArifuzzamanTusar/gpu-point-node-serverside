@@ -37,6 +37,26 @@ const startServe = async () => {
             const products = await cursor.toArray();
             res.status(200).send(products);
         });
+        // ------------------------------------------
+
+        // api get all products and filter by page and pagination-------------- ~~~
+        app.get('/products', async (req, res) => {
+            const page = parseInt(req.query.page);
+            const size = parseInt(req.query.size);
+
+            const query = {};
+            let products;
+            const cursor = productCollection.find(query);
+
+            if (page || size) {
+                products = await cursor.skip(page * size).limit(size).toArray();
+            } else {
+                products = await cursor.toArray();
+            }
+
+            res.send(products);
+        })
+        // --------------------------------
 
         // api insert product --------------------------------------------done
         app.post('/product', async (req, res) => {
@@ -44,6 +64,10 @@ const startServe = async () => {
             const result = await productCollection.insertOne(newProduct);
             res.send(result);
         });
+        // ----------------------------------
+
+
+
         // api get single product ------------------------------------- Done
         app.get('/product/:productId', async (req, res) => {
             const id = req.params.productId;
@@ -51,7 +75,7 @@ const startServe = async () => {
             const product = await productCollection.findOne(query);
             res.send(product);
         });
-        // api delete product-----------------------------------------
+        // api delete product----------------------------------------- Done
         app.delete('/product/:productId', async (req, res) => {
             const id = req.params.productId;
             const query = { _id: ObjectId(id) };
@@ -89,15 +113,16 @@ const startServe = async () => {
                 res.send(result);
             }
         });
+        // -----------------------------------------------
 
 
 
-
-        // products count
+        // products count------------------------------------------- DONE
         app.get('/products-count', async (req, res) => {
             const count = await productCollection.estimatedDocumentCount();
             res.send({ count });
         })
+        // ---------------------------------------------
 
 
 
