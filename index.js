@@ -53,6 +53,37 @@ const startServe = async () => {
             res.send(product);
         });
 
+        
+        // api product stock----------------------------------
+        app.put('/product/:productId', async (req, res) => {
+            const id = req.params.productId;
+            const updatedProduct = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+
+            if (updatedProduct.newQuantity && updatedProduct.newSold) {
+                const updatedDoc = {
+                    $set: {
+                        quantity: updatedProduct.newQuantity,
+                        sold: updatedProduct.newSold,
+                    }
+                }
+
+                const result = await productCollection.updateOne(filter, updatedDoc, options);
+                res.send(result);
+            } else {
+                const updatedDoc = {
+                    $set: {
+                        quantity: updatedProduct.newQuantity,
+                    }
+                }
+
+                const result = await productCollection.updateOne(filter, updatedDoc, options);
+                res.send(result);
+            }
+        });
+
+
 
 
 
