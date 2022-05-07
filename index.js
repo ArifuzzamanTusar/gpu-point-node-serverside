@@ -1,6 +1,8 @@
 const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000;
@@ -15,21 +17,38 @@ const uri = `mongodb+srv://${process.env.DBUSER}:${process.env.DBPASS}@gpu-point
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
-const startServe = async () =>{
-    try{
+const startServe = async () => {
+    try {
         await client.connect();
         const productCollections = client.db('gpu-point').collection('products');
 
-        app.get("/all-products", async (req,res) =>{
+        // -jwt 
+        app.post("/login", async (req, res) => {
+            const userEmail = req.body;
+            const token = jwt.sign(userEmail, process.env.ACCESSTOKEN);
+            res.send({ token });
+
+        });
+
+        app.get("/all-products", async (req, res) => {
             const cursor = productCollections.find({});
             const products = await cursor.toArray();
             res.status(200).send(products);
-        })
-        
+        });
 
-        
+        //add one
+        app.post('/product/add', async (req, res) => {
+            const newProduct = req.body;
+            console.log(newProduct);
+
+            const result = await productCollection.insertOne(newProduct);
+            res.send(result);
+        });
+
+
+
     }
-    finally{
+    finally {
 
     }
 
@@ -38,9 +57,9 @@ const startServe = async () =>{
 startServe().catch(console.dir);
 
 
-app.get("/", (req,res) =>{
+app.get("/", (req, res) => {
     res.json({
-        mgs : "hellow Im working",
+        mgs: "hellow Im working",
     })
 })
 
