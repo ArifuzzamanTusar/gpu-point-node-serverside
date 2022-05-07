@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion, ObjectId  } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
@@ -44,14 +44,14 @@ const startServe = async () => {
             const result = await productCollection.insertOne(newProduct);
             res.send(result);
         });
-        // api get single product -------------------------------------
+        // api get single product ------------------------------------- Done
         app.get('/product/:productId', async (req, res) => {
             const id = req.params.productId;
             const query = { _id: ObjectId(id) };
             const product = await productCollection.findOne(query);
             res.send(product);
         });
-        // api delete product
+        // api delete product-----------------------------------------
         app.delete('/product/:productId', async (req, res) => {
             const id = req.params.productId;
             const query = { _id: ObjectId(id) };
@@ -61,7 +61,7 @@ const startServe = async () => {
 
 
 
-        // api product stock----------------------------------
+        // api product stock----------------------------------Done
         app.put('/product/:productId', async (req, res) => {
             const id = req.params.productId;
             const updatedProduct = req.body;
@@ -89,6 +89,17 @@ const startServe = async () => {
                 res.send(result);
             }
         });
+
+
+
+
+        // products count
+        app.get('/products-count', async (req, res) => {
+            const count = await productCollection.estimatedDocumentCount();
+            res.send({ count });
+        })
+
+
 
 
 
