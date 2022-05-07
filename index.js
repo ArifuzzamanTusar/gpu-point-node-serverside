@@ -20,7 +20,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const startServe = async () => {
     try {
         await client.connect();
-        const productCollections = client.db('gpu-point').collection('products');
+        const productCollection = client.db('gpu-point').collection('products');
 
         // -jwt 
         app.post("/login", async (req, res) => {
@@ -31,7 +31,7 @@ const startServe = async () => {
         });
 
         app.get("/all-products", async (req, res) => {
-            const cursor = productCollections.find({});
+            const cursor = productCollection.find({});
             const products = await cursor.toArray();
             res.status(200).send(products);
         });
@@ -44,6 +44,15 @@ const startServe = async () => {
             const result = await productCollection.insertOne(newProduct);
             res.send(result);
         });
+
+        // api get single product -------------------------------------
+        app.get('/product/:productId', async (req, res) => {
+            const id = req.params.productId;
+            const query = { _id: ObjectId(id) };
+            const product = await productCollection.findOne(query);
+            res.send(product);
+        });
+
 
 
 
