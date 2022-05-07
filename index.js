@@ -43,8 +43,7 @@ const startServe = async () => {
             const newProduct = req.body;
             const result = await productCollection.insertOne(newProduct);
             res.send(result);
-        })
-
+        });
         // api get single product -------------------------------------
         app.get('/product/:productId', async (req, res) => {
             const id = req.params.productId;
