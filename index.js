@@ -30,7 +30,7 @@ const startServe = async () => {
 
         });
 
-        // Get All Products--------------------------
+        // Get All Products-------------------------- done
 
         app.get("/all-products", async (req, res) => {
             const cursor = productCollection.find({});
@@ -38,7 +38,7 @@ const startServe = async () => {
             res.status(200).send(products);
         });
 
-        // api insert product --------------------------------------------
+        // api insert product --------------------------------------------done
         app.post('/product', async (req, res) => {
             const newProduct = req.body;
             const result = await productCollection.insertOne(newProduct);
@@ -52,6 +52,14 @@ const startServe = async () => {
             const product = await productCollection.findOne(query);
             res.send(product);
         });
+        // api delete product
+        app.delete('/product/:productId', async (req, res) => {
+            const id = req.params.productId;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        });
+
 
 
         // api product stock----------------------------------
