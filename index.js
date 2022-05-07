@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId  } = require('mongodb');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 
@@ -68,10 +68,10 @@ const startServe = async () => {
             const filter = { _id: ObjectId(id) };
             const options = { upsert: true };
 
-            if (updatedProduct.newQuantity && updatedProduct.newSold) {
+            if (updatedProduct.newStock && updatedProduct.newSold) {
                 const updatedDoc = {
                     $set: {
-                        quantity: updatedProduct.newQuantity,
+                        stock: updatedProduct.newStock,
                         sold: updatedProduct.newSold,
                     }
                 }
@@ -81,7 +81,7 @@ const startServe = async () => {
             } else {
                 const updatedDoc = {
                     $set: {
-                        quantity: updatedProduct.newQuantity,
+                        stock: updatedProduct.newStock,
                     }
                 }
 
