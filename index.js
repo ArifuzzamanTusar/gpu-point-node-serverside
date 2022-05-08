@@ -22,13 +22,13 @@ const startServe = async () => {
         await client.connect();
         const productCollection = client.db('gpu-point').collection('products');
 
-        // -jwt 
-        app.post("/login", async (req, res) => {
-            const userEmail = req.body;
-            const token = jwt.sign(userEmail, process.env.ACCESSTOKEN);
-            res.send({ token });
 
-        });
+        // jwt token AUTH---------------------------------Done
+        app.post('/login', async (req, res) => {
+            const user = req.body;
+            const accessToken = jwt.sign(user, process.env.ACCESSTOKEN, { expiresIn: '1d' });
+            res.send({ accessToken });
+        })
 
         // Get All Products-------------------------- done
 
