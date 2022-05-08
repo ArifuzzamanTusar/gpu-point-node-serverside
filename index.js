@@ -11,7 +11,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// jwt verification-----------------------------------------------
+// jwt verification----------------------------------------------- DONE
 function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
 
@@ -146,7 +146,7 @@ const startServe = async () => {
         // ---------------------------------------------
 
 
-        // my products with JWT verification--------------------------------
+        // my products with JWT verification-------------------------------- DONE
         app.get('/my-products', verifyJWT, async (req, res) => {
             const decodedEmail = req.decoded.email;
             const email = req.query.email;
