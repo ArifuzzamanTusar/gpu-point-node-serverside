@@ -7,8 +7,29 @@ const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
+// ---Middleware 
 app.use(cors());
 app.use(express.json());
+
+// jwt verification-----------------------------------------------
+function verifyJWT(req, res, next) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send({ message: 'Unauthorized access' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESSTOKEN, (err, decoded) => {
+        if (err) {
+            return res.status(403).send({ message: 'Forbidden access' });
+        }
+        req.decoded = decoded;
+        next();
+    })
+}
+
 
 
 
@@ -125,9 +146,20 @@ const startServe = async () => {
         // ---------------------------------------------
 
 
+        // my products with JWT verification--------------------------------
+        app.get('/my-products', verifyJWT, async (req, res) => {
+            const decodedEmail = req.decoded.email;
+            const email = req.query.email;
 
-
-
+            if (email === decodedEmail) {
+                const query = { email: email };
+                const cursor = productCollection.find(query);
+                const myProducts = await cursor.toArray();
+                res.send(myProducts);
+            } else {
+                res.status(403).send({ message: 'forbidden access' });
+            }
+        })
 
 
 
